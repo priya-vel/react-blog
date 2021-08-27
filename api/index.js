@@ -15,18 +15,22 @@ dotenv.config()
 app.use(express.json())
 
     mongoose
-    .connect(process.env.MONGO_URL, {
+    .connect("mongodb+srv://priya:root@cluster0.sbi2t.mongodb.net/blog?retryWrites=true&w=majority", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
        
     }).then(console.log("connected to mongoDb "))
-      .catch((err)=> console.log(err))  
+      .catch((err)=> console.log(err)); 
       const storage = multer.diskStorage({
           destination:(req, file, cb) =>{
               cb(null, "images")
           },filename:(req,file,cb)=>{
-              cb(null, req.body.name);
+              cb(null, "hello.jpg");
           }
+      })
+      const upload = multer({ storage:storage});
+      app.post("/api/upload", upload.single("file"), (req,res)=>{
+          res.status(200).json("file has been uploaded")
       })
 
 app.use("/api/auth", authRoute);
