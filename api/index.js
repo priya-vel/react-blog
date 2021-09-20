@@ -27,7 +27,7 @@ app.use("/images", express.static(path.join(__dirname, "/images")));
           destination:(req, file, cb) =>{
               cb(null, "images")
           },filename:(req,file,cb)=>{
-              cb(null, "hello.jpg");
+              cb(null, req.body.name);
           }
       })
       const upload = multer({ storage:storage});

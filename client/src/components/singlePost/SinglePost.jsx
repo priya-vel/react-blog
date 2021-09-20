@@ -1,41 +1,57 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./singlePost.css"
-
+import { Link } from "react-router-dom"
+import { Context } from "../../context/Context";
 export default function SinglePost() {
+    const location = useLocation()
+   const path =location.pathname.split("/")[2];
+   const [post, setPost] = useState({});
+   const PF = "http://localhost:5000/images/";
+   const {user} = useContext(Context);
+
+
+   useEffect(()=>{
+        const getPost = async()=>{
+            const res = await axios.get("/posts/"+ path);
+           setPost(res.data)
+        };
+        getPost()
+   },[path])
+   const handeleDelete =  () =>{
+
+   }
     return (
         <div className="singlePost">
             <div className="singlePostWrapper">
-                <img src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" 
-                alt="" className="singlePostimg" />
+                {post.photo && 
+                <img src={PF + post.photo}
+                alt="" className="singlePostimg" />}
+                
                 <h1 className="singlePostTitleimg">
-                    Lorem ipsum dolor sit amet.
-                    <div className="singlePostEdit">
-                <i className="singlePostIcon far fa-edit"></i>
-                <i className="singlePostIcon far fa-trash-alt"></i>
-                </div>
+                   {post.title}
+                   {post.username === user?.username && (
+                         <div className="singlePostEdit">
+                         <i className="singlePostIcon far fa-edit"></i>
+                         <i className="singlePostIcon far fa-trash-alt" onClick={handleDelete}></i>
+                         </div>
+                   ) }
+                  
                 </h1>
                 <div className="singlePostInfo">
-                    <span className="singlePostAuthor">Author: <b>Priya</b></span>
-                    <span className="singlePostDate">1 hour ago</span>
+                    <span className="singlePostAuthor">Author:
+                    <Link to = {`/?user=${post.username}`} className="link">
+                    <b>{post.username}</b>
+                    </Link>
+                    </span>
+                 
+                    <span className="singlePostDate">{new Date(post.createdAt).toDateString()} </span>
 
                 </div>
-                <p className="singlePostDesc">Tempora exercitationem 
-                    perspiciatis corrupti magni dolores similique 
-                    ipsum quam incidunt. Libero illum eos ab esse
-                     nobis voluptatem, provident natus porro recus
-                     andae iusto.orem ipsum dolor sit amet consectetur 
-                    adipisicing elit.LTempora exercitationem 
-                    perspiciatis corrupti magni dolores similique 
-                    ipsum quam incidunt. Libero illum eos ab esse
-                     nobis voluptatem, provident natus porro recus
-                     andae iusto.orem ipsum dolor sit amet consectetur 
-                    adipisicing elit. voluptatem, provident natus porro recus
-                     andae iusto.orem ipsum dolor sit amet consectetur 
-                    adipisicing elit.LTempora exercitationem 
-                    perspiciatis corrupti magni dolores similique 
-                    ipsum quam incidunt. Libero illum eos ab esse
-                     nobis voluptatem, provident natus porro recus
-                     andae iusto.orem ipsum dolor sit amet consectetur 
-                    adipisicing elit. </p>
+                <p className="singlePostDesc">
+                   {post.desc}
+                   </p>
                 
              
             </div>
